@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Envoy Gateway policies</title>
+        <link rel="stylesheet" href="envoy.css" />
+        <!-- The bridge to the app. Served by k8sdockside itself, always at this path. -->
+        <script src="/plugin-ui/_sdk/k8sdockside.js"></script>
+    </head>
+    <body class="page page-policies">
+        <header class="top">
+            <div class="brand">
+                <span class="brand-mark" id="mark"></span>
+                <div>
+                    <h1>Policies</h1>
+                    <p id="where" class="faint small">Reading…</p>
+                </div>
+            </div>
+            <div class="toolbar">
+                <input id="query" type="search" placeholder="Find a policy, or what it applies to" autocomplete="off" spellcheck="false" />
+                <label class="toggle"><input id="problems" type="checkbox" /> Only problems</label>
+            </div>
+        </header>
+
+        <p id="error" class="banner error" hidden></p>
+        <nav id="filters" class="filters" aria-label="Policy types"></nav>
+        <div id="groups" class="policy-groups"></div>
+
+        <!-- Classic scripts, not type="module": a sandboxed frame has an opaque
+             origin, so a module would be a cross-origin load. -->
+        <script src="model.js"></script>
+        <script src="kit.js"></script>
+        <script src="parts.js"></script>
+        <script src="policies.js"></script>
+    </body>
+</html>

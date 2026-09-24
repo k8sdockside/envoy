@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Envoy Gateway traffic map</title>
+        <link rel="stylesheet" href="envoy.css" />
+        <!-- The bridge to the app. Served by k8sdockside itself, always at this path. -->
+        <script src="/plugin-ui/_sdk/k8sdockside.js"></script>
+    </head>
+    <body class="page page-map">
+        <header class="top">
+            <div class="brand">
+                <span class="brand-mark" id="mark"></span>
+                <div>
+                    <h1>Traffic map</h1>
+                    <p id="where" class="faint small">Reading…</p>
+                </div>
+            </div>
+            <div class="toolbar">
+                <input id="query" type="search" placeholder="Find a host, route, Service or address" autocomplete="off" spellcheck="false" />
+                <select id="gateway" aria-label="Gateway"></select>
+                <label class="toggle"><input id="problems" type="checkbox" /> Only problems</label>
+            </div>
+        </header>
+
+        <p id="error" class="banner error" hidden></p>
+
+        <div class="map-layout">
+            <div>
+                <div id="map" class="map"></div>
+                <div class="legend-row">
+                    <span><span class="line"></span> traffic flows</span>
+                    <span><span class="line error"></span> broken: not accepted, or nowhere to go</span>
+                    <span>Hover anything to trace its path; click it for details.</span>
+                </div>
+            </div>
+            <aside id="inspector" class="inspector" aria-live="polite"></aside>
+        </div>
+
+        <!-- Classic scripts, not type="module": a sandboxed frame has an opaque
+             origin, so a module would be a cross-origin load. -->
+        <script src="model.js"></script>
+        <script src="kit.js"></script>
+        <script src="parts.js"></script>
+        <script src="map.js"></script>
+    </body>
+</html>

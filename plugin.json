@@ -1,0 +1,240 @@
+{
+    "$schema": "https://raw.githubusercontent.com/k8sdockside/k8sdockside/main/docs/plugin.schema.json",
+    "id": "envoy-gateway",
+    "name": "Envoy Gateway",
+    "version": "0.1.0",
+    "minAppVersion": "0.1.1",
+    "tagline": "Gateway API traffic through Envoy, from listener to backend",
+    "category": "networking",
+    "icon": "gateway",
+    "logo": "logo.svg",
+    "docs": "https://gateway.envoyproxy.io/docs/",
+    "author": "K8s Dockside",
+    "authorUrl": "https://github.com/k8sdockside",
+    "links": [
+        { "label": "gateway.envoyproxy.io", "url": "https://gateway.envoyproxy.io" },
+        { "label": "Policies", "url": "https://gateway.envoyproxy.io/docs/api/extension_types/" },
+        { "label": "GitHub", "url": "https://github.com/envoyproxy/gateway" },
+        { "label": "Plugin source", "url": "https://github.com/k8sdockside/envoy" }
+    ],
+    "description": "Envoy Gateway runs Envoy proxies for the Gateways you declare with the Gateway API, and adds policies for what the Gateway API leaves out: rate limits, retries, timeouts, authentication, CORS and more.\n\nStart with the overview: every Gateway with its addresses, listeners and proxies, and what needs attention in plain words. The Traffic map follows a request from listener to route to the Service behind it, and says where the path breaks. Policies lists every policy, what it is attached to, whether Envoy Gateway accepted it, and what it actually does.\n\nGateways, routes and policies also get a panel in their detail views. The plugin only reads; it changes nothing in the cluster.",
+    "requires": [
+        { "kind": "crd:envoyproxies.gateway.envoyproxy.io", "label": "Envoy proxies" },
+        { "kind": "crd:clienttrafficpolicies.gateway.envoyproxy.io", "label": "Client traffic policies" },
+        { "kind": "crd:backendtrafficpolicies.gateway.envoyproxy.io", "label": "Backend traffic policies" },
+        { "kind": "crd:securitypolicies.gateway.envoyproxy.io", "label": "Security policies" },
+        { "kind": "crd:envoyextensionpolicies.gateway.envoyproxy.io", "label": "Extension policies", "optional": true },
+        { "kind": "crd:envoypatchpolicies.gateway.envoyproxy.io", "label": "Patch policies", "optional": true },
+        { "kind": "crd:backends.gateway.envoyproxy.io", "label": "Backends", "optional": true },
+        { "kind": "crd:httproutefilters.gateway.envoyproxy.io", "label": "HTTP route filters", "optional": true }
+    ],
+    "ui": {
+        "kinds": [
+            "gatewayclasses",
+            "gateways",
+            "httproutes",
+            "grpcroutes",
+            "tlsroutes",
+            "tcproutes",
+            "udproutes",
+            "services",
+            "endpointslices",
+            "pods",
+            "events"
+        ],
+        "write": false
+    },
+    "overview": { "entry": "overview.html" },
+    "views": [
+        { "id": "map", "label": "Traffic map", "icon": "route", "type": "custom", "entry": "index.html" },
+        { "id": "policies", "label": "Policies", "icon": "shield", "type": "custom", "entry": "policies.html" },
+        { "id": "envoyproxies", "label": "Envoy proxies", "icon": "sliders", "kind": "crd:envoyproxies.gateway.envoyproxy.io" },
+        {
+            "id": "clienttrafficpolicies",
+            "label": "Client traffic policies",
+            "icon": "user",
+            "kind": "crd:clienttrafficpolicies.gateway.envoyproxy.io"
+        },
+        {
+            "id": "backendtrafficpolicies",
+            "label": "Backend traffic policies",
+            "icon": "gauge",
+            "kind": "crd:backendtrafficpolicies.gateway.envoyproxy.io"
+        },
+        { "id": "securitypolicies", "label": "Security policies", "icon": "lock", "kind": "crd:securitypolicies.gateway.envoyproxy.io" },
+        {
+            "id": "envoyextensionpolicies",
+            "label": "Extension policies",
+            "icon": "puzzle",
+            "kind": "crd:envoyextensionpolicies.gateway.envoyproxy.io"
+        },
+        { "id": "envoypatchpolicies", "label": "Patch policies", "icon": "edit", "kind": "crd:envoypatchpolicies.gateway.envoyproxy.io" },
+        { "id": "backends", "label": "Backends", "icon": "server", "kind": "crd:backends.gateway.envoyproxy.io" },
+        { "id": "httproutefilters", "label": "HTTP route filters", "icon": "sliders", "kind": "crd:httproutefilters.gateway.envoyproxy.io" },
+        {
+            "id": "proxies",
+            "label": "Envoy proxy pods",
+            "icon": "box",
+            "kind": "pods",
+            "selector": "app.kubernetes.io/managed-by=envoy-gateway,app.kubernetes.io/component=proxy"
+        },
+        { "id": "controller", "label": "Controller pods", "icon": "server", "kind": "pods", "selector": "control-plane=envoy-gateway" }
+    ],
+    "cards": [
+        { "label": "Envoy proxies", "kind": "crd:envoyproxies.gateway.envoyproxy.io" },
+        { "label": "Client traffic policies", "kind": "crd:clienttrafficpolicies.gateway.envoyproxy.io" },
+        { "label": "Backend traffic policies", "kind": "crd:backendtrafficpolicies.gateway.envoyproxy.io" },
+        { "label": "Security policies", "kind": "crd:securitypolicies.gateway.envoyproxy.io" },
+        {
+            "label": "Envoy proxy pods",
+            "kind": "pods",
+            "selector": "app.kubernetes.io/managed-by=envoy-gateway,app.kubernetes.io/component=proxy",
+            "groupBy": "status.phase",
+            "tones": { "Running": "ok", "Pending": "warn", "Failed": "error", "Unknown": "warn" }
+        },
+        {
+            "label": "Controller pods",
+            "kind": "pods",
+            "selector": "control-plane=envoy-gateway",
+            "groupBy": "status.phase",
+            "tones": { "Running": "ok", "Pending": "warn", "Failed": "error", "Unknown": "warn" }
+        }
+    ],
+    "charts": [
+        {
+            "id": "requests",
+            "label": "Requests by response",
+            "attach": "overview",
+            "unit": "ops/s",
+            "legend": "envoy_response_code_class",
+            "description": "Requests per second the Envoy proxies answered, by the first digit of the response code: 2 is success, 4 a client error, 5 a server error. Needs the proxies' metrics scraped.",
+            "query": "sum by (envoy_response_code_class) (rate(envoy_http_downstream_rq_xx{envoy_http_conn_manager_prefix!=\"admin\"}[5m]))"
+        },
+        {
+            "id": "errors",
+            "label": "Server errors",
+            "attach": "overview",
+            "unit": "percent",
+            "description": "The share of requests answered with a 5xx. A 503 from Envoy usually means the backend had no ready endpoints; a 504 that it did not answer in time.",
+            "query": "sum(rate(envoy_http_downstream_rq_xx{envoy_response_code_class=\"5\",envoy_http_conn_manager_prefix!=\"admin\"}[5m])) / sum(rate(envoy_http_downstream_rq_xx{envoy_http_conn_manager_prefix!=\"admin\"}[5m]))"
+        },
+        {
+            "id": "latency",
+            "label": "Latency (p95)",
+            "attach": "overview",
+            "unit": "seconds",
+            "description": "How long the slowest twentieth of requests took, from Envoy receiving the request to sending the last byte of the response.",
+            "query": "histogram_quantile(0.95, sum by (le) (rate(envoy_http_downstream_rq_time_bucket[5m]))) / 1000"
+        },
+        {
+            "id": "connections",
+            "label": "Open connections",
+            "attach": "overview",
+            "unit": "count",
+            "description": "Client connections open to the Envoy proxies right now.",
+            "query": "sum(envoy_http_downstream_cx_active{envoy_http_conn_manager_prefix!=\"admin\"})"
+        },
+        {
+            "id": "backend-errors",
+            "label": "Backends answering 5xx",
+            "attach": "overview",
+            "unit": "ops/s",
+            "legend": "envoy_cluster_name",
+            "description": "The five backends answering the most server errors, by Envoy Gateway's name for the route rule they serve: httproute/<namespace>/<route>/rule/<n>.",
+            "query": "topk(5, sum by (envoy_cluster_name) (rate(envoy_cluster_upstream_rq_xx{envoy_response_code_class=\"5\"}[5m])) > 0)"
+        },
+        {
+            "id": "gateway-requests",
+            "label": "Requests by response",
+            "attach": "gateways",
+            "unit": "ops/s",
+            "legend": "envoy_response_code_class",
+            "description": "Requests per second this Gateway's proxies answered, by the first digit of the response code. Found by the names Envoy Gateway gives the proxies (envoy-<namespace>-<gateway>-…).",
+            "query": "sum by (envoy_response_code_class) (rate(envoy_http_downstream_rq_xx{pod=~\"envoy-$namespace-$name-.*\",envoy_http_conn_manager_prefix!=\"admin\"}[5m]))"
+        },
+        {
+            "id": "gateway-latency",
+            "label": "Latency (p95)",
+            "attach": "gateways",
+            "unit": "seconds",
+            "description": "How long the slowest twentieth of this Gateway's requests took.",
+            "query": "histogram_quantile(0.95, sum by (le) (rate(envoy_http_downstream_rq_time_bucket{pod=~\"envoy-$namespace-$name-.*\"}[5m]))) / 1000"
+        },
+        {
+            "id": "gateway-connections",
+            "label": "Open connections",
+            "attach": "gateways",
+            "unit": "count",
+            "description": "Client connections open to this Gateway's proxies.",
+            "query": "sum(envoy_http_downstream_cx_active{pod=~\"envoy-$namespace-$name-.*\",envoy_http_conn_manager_prefix!=\"admin\"})"
+        },
+        {
+            "id": "route-requests",
+            "label": "Requests per rule",
+            "attach": "httproutes",
+            "unit": "ops/s",
+            "legend": "envoy_cluster_name",
+            "description": "Requests per second sent to the backends of each of this route's rules.",
+            "query": "sum by (envoy_cluster_name) (rate(envoy_cluster_upstream_rq_total{envoy_cluster_name=~\"httproute/$namespace/$name/rule/.*\"}[5m]))"
+        },
+        {
+            "id": "route-errors",
+            "label": "Server errors per rule",
+            "attach": "httproutes",
+            "unit": "ops/s",
+            "legend": "envoy_cluster_name",
+            "description": "5xx answers per second from the backends of each of this route's rules.",
+            "query": "sum by (envoy_cluster_name) (rate(envoy_cluster_upstream_rq_xx{envoy_response_code_class=\"5\",envoy_cluster_name=~\"httproute/$namespace/$name/rule/.*\"}[5m]))"
+        },
+        {
+            "id": "route-latency",
+            "label": "Backend latency (p95)",
+            "attach": "httproutes",
+            "unit": "seconds",
+            "description": "How long this route's backends took to answer, for the slowest twentieth of requests.",
+            "query": "histogram_quantile(0.95, sum by (le) (rate(envoy_cluster_upstream_rq_time_bucket{envoy_cluster_name=~\"httproute/$namespace/$name/rule/.*\"}[5m]))) / 1000"
+        },
+        {
+            "id": "grpcroute-requests",
+            "label": "Requests per rule",
+            "attach": "grpcroutes",
+            "unit": "ops/s",
+            "legend": "envoy_cluster_name",
+            "description": "Requests per second sent to the backends of each of this route's rules.",
+            "query": "sum by (envoy_cluster_name) (rate(envoy_cluster_upstream_rq_total{envoy_cluster_name=~\"grpcroute/$namespace/$name/rule/.*\"}[5m]))"
+        }
+    ],
+    "sections": [
+        { "id": "gateway", "label": "Envoy Gateway", "kind": "gateways", "entry": "gateway.html", "height": 360 },
+        { "id": "httproute", "label": "Traffic", "kind": "httproutes", "entry": "route.html", "height": 320 },
+        { "id": "grpcroute", "label": "Traffic", "kind": "grpcroutes", "entry": "route.html", "height": 320 },
+        {
+            "id": "client-policy",
+            "label": "What it does",
+            "kind": "crd:clienttrafficpolicies.gateway.envoyproxy.io",
+            "entry": "policy.html",
+            "height": 220
+        },
+        {
+            "id": "backend-policy",
+            "label": "What it does",
+            "kind": "crd:backendtrafficpolicies.gateway.envoyproxy.io",
+            "entry": "policy.html",
+            "height": 220
+        },
+        {
+            "id": "security-policy",
+            "label": "What it does",
+            "kind": "crd:securitypolicies.gateway.envoyproxy.io",
+            "entry": "policy.html",
+            "height": 220
+        },
+        {
+            "id": "extension-policy",
+            "label": "What it does",
+            "kind": "crd:envoyextensionpolicies.gateway.envoyproxy.io",
+            "entry": "policy.html",
+            "height": 220
+        }
+    ]
+}

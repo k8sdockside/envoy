@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Envoy Gateway</title>
+        <link rel="stylesheet" href="envoy.css" />
+        <!-- The bridge to the app. Served by k8sdockside itself, always at this path. -->
+        <script src="/plugin-ui/_sdk/k8sdockside.js"></script>
+    </head>
+    <body class="page page-overview">
+        <p id="error" class="banner error" hidden></p>
+
+        <!-- What Envoy Gateway is doing here, in one sentence. -->
+        <section id="hero" class="hero">
+            <div class="loading">
+                <span class="pulse"></span>
+                <span>Looking for Envoy Gateway…</span>
+            </div>
+        </section>
+
+        <section id="tiles" class="tiles" hidden></section>
+
+        <section id="gateways-block" class="block" hidden>
+            <div id="gateways-head"></div>
+            <div id="gateways" class="gateways"></div>
+        </section>
+
+        <div id="columns" class="two" hidden>
+            <section id="attention"></section>
+            <section id="activity"></section>
+        </div>
+
+        <section id="traffic" class="block" hidden></section>
+
+        <footer id="foot" class="foot" hidden></footer>
+
+        <!-- Classic scripts, not type="module": a sandboxed frame has an opaque
+             origin, so a module would be a cross-origin load. -->
+        <script src="model.js"></script>
+        <script src="kit.js"></script>
+        <script src="parts.js"></script>
+        <script src="overview.js"></script>
+    </body>
+</html>
