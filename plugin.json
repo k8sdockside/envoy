@@ -7,7 +7,7 @@
     "tagline": "Gateway API traffic through Envoy, from listener to backend",
     "category": "networking",
     "icon": "gateway",
-    "logo": "logo.svg",
+    "logo": "logo.png",
     "docs": "https://gateway.envoyproxy.io/docs/",
     "author": "K8s Dockside",
     "authorUrl": "https://github.com/k8sdockside",
