@@ -3,7 +3,7 @@
     "id": "envoy-gateway",
     "name": "Envoy Gateway",
     "version": "0.1.0",
-    "minAppVersion": "0.1.1",
+    "minAppVersion": "0.1.36",
     "tagline": "Gateway API traffic through Envoy, from listener to backend",
     "category": "networking",
     "icon": "gateway",

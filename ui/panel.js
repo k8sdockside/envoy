@@ -50,5 +50,16 @@
         sdk.open(ref).catch(fail);
     }
 
-    window.EnvoyPanel = { start: start, open: open, fail: fail, sdk: sdk, E: E };
+    /**
+     * A titled block that folds, as the app's own sections do: the SDK's
+     * ui.section, with className added to its body for the plugin's own
+     * layout of what is in it.
+     */
+    function section(options, className) {
+        var sec = sdk.ui.section(options);
+        if (className) sec.body.className += ' ' + className;
+        return sec;
+    }
+
+    window.EnvoyPanel = { start: start, open: open, fail: fail, section: section, sdk: sdk, E: E };
 })();

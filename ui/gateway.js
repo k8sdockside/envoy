@@ -101,16 +101,14 @@
 
         var grid = el('div', 'panel-grid');
         grid.style.marginTop = '12px';
-        var pol = el('div', 'panel-block');
-        pol.appendChild(el('p', 'sub-heading', 'Policies'));
+        var pol = X.section({ id: 'policies', title: 'Policies', count: g.policies.length, what: 'the policies' }, 'panel-block');
         if (g.policies.length) {
             var chips = el('div', 'node-chips');
             add(chips, P.policyChips(g.policies, X.open));
-            pol.appendChild(chips);
-        } else pol.appendChild(el('p', 'faint small', 'None attached to the Gateway itself; routes may have their own.'));
-        var proxies = el('div', 'panel-block');
-        proxies.appendChild(el('p', 'sub-heading', 'Proxy pods'));
-        if (!g.proxies.length) proxies.appendChild(el('p', 'faint small', 'None found for this Gateway.'));
+            pol.body.appendChild(chips);
+        } else pol.body.appendChild(el('p', 'faint small', 'None attached to the Gateway itself; routes may have their own.'));
+        var proxies = X.section({ id: 'proxies', title: 'Proxy pods', count: g.proxies.length, what: 'the proxy pods' }, 'panel-block');
+        if (!g.proxies.length) proxies.body.appendChild(el('p', 'faint small', 'None found for this Gateway.'));
         g.proxies.slice(0, 6).forEach(function (p) {
             var row = el('div', 'panel-row');
             add(
@@ -124,9 +122,9 @@
                     X.sdk.logs(p.ref).catch(X.fail);
                 }, 'Open its logs', 'small'),
             );
-            proxies.appendChild(row);
+            proxies.body.appendChild(row);
         });
-        add(grid, pol, proxies);
+        add(grid, pol.root, proxies.root);
         root.appendChild(grid);
     }
 

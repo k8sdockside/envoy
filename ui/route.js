@@ -62,24 +62,24 @@
         });
         root.appendChild(parents);
 
-        var hosts = el('div', 'panel-row');
-        hosts.style.margin = '10px 0';
-        hosts.appendChild(el('span', 'faint small', 'Hosts'));
+        var hosts = X.section({ id: 'hosts', title: 'Hosts', count: r.hostnames.length || undefined, what: 'the hosts' });
+        hosts.root.style.marginTop = '10px';
+        var names = el('div', 'panel-row');
         if (r.hostnames.length) {
             r.hostnames.forEach(function (h) {
-                hosts.appendChild(K.chip(h, 'mono'));
+                names.appendChild(K.chip(h, 'mono'));
             });
-        } else hosts.appendChild(el('span', 'small', 'every host the listener accepts'));
-        root.appendChild(hosts);
+        } else names.appendChild(el('span', 'small', 'every host the listener accepts'));
+        hosts.body.appendChild(names);
+        root.appendChild(hosts.root);
 
         root.appendChild(P.rulesView(r, X.open));
 
         if (r.policies.length) {
-            var pol = el('div', 'panel-row');
-            pol.style.marginTop = '10px';
-            pol.appendChild(el('span', 'faint small', 'Policies'));
-            add(pol, P.policyChips(r.policies, X.open));
-            root.appendChild(pol);
+            var pol = X.section({ id: 'policies', title: 'Policies', count: r.policies.length, what: 'the policies' }, 'panel-row');
+            pol.root.style.marginTop = '10px';
+            add(pol.body, P.policyChips(r.policies, X.open));
+            root.appendChild(pol.root);
         }
     }
 

@@ -36,38 +36,38 @@
             return;
         }
         var grid = el('div', 'panel-grid');
-        var does = el('div', 'panel-block policy ' + p.type.key);
-        does.style.border = '0';
-        does.style.padding = '0';
-        does.style.background = 'none';
-        does.appendChild(el('p', 'sub-heading', 'What it does'));
+        var does = X.section({ id: 'does', title: 'What it does', what: 'what it does' }, 'panel-block policy ' + p.type.key);
+        does.body.style.border = '0';
+        does.body.style.padding = '0';
+        does.body.style.background = 'none';
         var list = el('ul', 'does');
         p.summary.forEach(function (line) {
             list.appendChild(el('li', '', line));
         });
-        does.appendChild(list);
+        does.body.appendChild(list);
 
         var where = el('div', 'panel-block');
-        where.appendChild(el('p', 'sub-heading', 'Applies to'));
+        var applies = X.section({ id: 'targets', title: 'Applies to', count: p.targets.length, what: 'what it applies to' });
         var targets = el('div', 'targets');
         if (!p.targets.length) targets.appendChild(el('span', 'faint', 'nothing'));
         p.targets.forEach(function (t) {
             targets.appendChild(P.targetChip(t, X.open));
         });
-        where.appendChild(targets);
-        where.appendChild(el('p', 'sub-heading', 'Accepted by'));
-        if (!p.ancestors.length) where.appendChild(el('p', 'faint small', 'No Gateway has reported on it yet.'));
+        applies.body.appendChild(targets);
+        var accepted = X.section({ id: 'accepted', title: 'Accepted by', count: p.ancestors.length, what: 'the Gateways' }, 'panel-block');
+        if (!p.ancestors.length) accepted.body.appendChild(el('p', 'faint small', 'No Gateway has reported on it yet.'));
         p.ancestors.forEach(function (a) {
             var row = el('div', 'panel-row');
             var ok = a.accepted && a.accepted.status === 'True';
             add(row, K.icon('gateway'), el('span', 'small', a.name), K.pill(ok ? 'ok' : a.accepted ? 'error' : 'warn', ok ? 'Accepted' : a.accepted ? E.words(a.accepted.reason) || 'Not accepted' : 'No status'));
-            where.appendChild(row);
-            if (a.accepted && !ok && a.accepted.message) where.appendChild(el('p', 'says error', a.accepted.message));
+            accepted.body.appendChild(row);
+            if (a.accepted && !ok && a.accepted.message) accepted.body.appendChild(el('p', 'says error', a.accepted.message));
             a.notes.forEach(function (n) {
-                where.appendChild(el('p', 'says warn', n));
+                accepted.body.appendChild(el('p', 'says warn', n));
             });
         });
-        add(grid, does, where);
+        add(where, applies.root, accepted.root);
+        add(grid, does.root, where);
         root.appendChild(grid);
     }
 
